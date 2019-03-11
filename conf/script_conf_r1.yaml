@@ -1,0 +1,151 @@
+memoflow:
+  route_id: 1
+  logo: tuzhuyou.jpg
+  author:
+    display: true
+    font: "msyh.ttc"
+    font_size: 18
+    x: w-text_w-10
+    y: h-text_h-10
+    color: "0xffffff"
+    vfx:
+  bgmusic: [Otokaze-SavetheflavorPart3-Insturmentalversion.mp3]
+
+  cut1:
+    poi_cover: cut1.png
+    poi_title: "塞纳河畔，咖啡屋"
+    poi_subtitle: "————  老上海调调  ————"
+    poi_cover_duration: 3
+    type1:
+      strategy: random
+      lists:
+        - duration: 3
+          subtitle_font: "msyh.ttc"
+          subtitle_font_size: 64
+          subtitle_x: "(w-text_w)/2"
+          subtitle_y: "(h-text_h)/2"
+          subtitle_color: "0xffffff"
+          subtitle_vfx:
+        - duration: 4
+          subtitle_font: "msyh.ttc"
+          subtitle_font_size: 64
+          subtitle_x: "(w-text_w)/2"
+          subtitle_y: "(h-text_h)/2 - 100"
+          subtitle_color: "0xffffff"
+          subtitle_vfx:
+    type2:
+      duration: [3,4,5]
+      trans_in: [1, 2]
+      trans_out: [1, 2]
+      animation: [1, 2]
+      subtitle: ""
+      subtitle_font: "msyh.ttc"
+      subtitle_font_size: 32
+      subtitle_x: 0
+      subtitle_y: 0
+      subtitle_color: "0xffffff"
+      subtitle_vfx:
+    type3:
+      duration: [8]
+      trans_in: [1, 2, 3, 4]
+      trans_out: [1, 2, 3, 4]
+      animation:
+      subtitle: ""
+      subtitle_font: "msyh.ttc"
+      subtitle_font_size: 32
+      subtitle_x: 0
+      subtitle_y: 0
+      subtitle_color: "0xffffff"
+      subtitle_vfx:
+  cut2:
+    poi_cover: cut2.png
+    poi_title:
+    poi_subtitle:
+    poi_cover_duration: 3
+    type1:
+      strategy: random
+      lists:
+        - duration: 3
+          subtitle_font: "msyh.ttc"
+          subtitle_font_size: 64
+          subtitle_x: "(w-text_w)/2"
+          subtitle_y: "(h-text_h)/2"
+          subtitle_color: "0xffffff"
+          subtitle_vfx:
+        - duration: 4
+          subtitle_font: "msyh.ttc"
+          subtitle_font_size: 64
+          subtitle_x: "(w-text_w)/2"
+          subtitle_y: "(h-text_h)/2-100"
+          subtitle_color: "0xF5F5DC"
+          subtitle_vfx:
+    type2:
+      duration: [3,4,5]
+      trans_in: [1, 2, 3, 4]
+      trans_out: [1, 2, 3, 4]
+      animation: [1, 2]
+      subtitle: ""
+      subtitle_font: "msyh.ttc"
+      subtitle_font_size: 32
+      subtitle_x: 0
+      subtitle_y: 0
+      subtitle_color: "0xffffff"
+      subtitle_vfx:
+    type3:
+      duration: [8]
+      trans_in: [1, 2, 3, 4]
+      trans_out: [1, 2, 3, 4]
+      animation:
+      subtitle: ""
+      subtitle_font: "msyh.ttc"
+      subtitle_font_size: 32
+      subtitle_x: 0
+      subtitle_y: 0
+      subtitle_color: "0xffffff"
+      subtitle_vfx:
+  cut3:
+    poi_cover: cut3.png
+    poi_title: "塞纳河畔，咖啡屋"
+    poi_subtitle: "————  幸福快乐  ————"
+    poi_cover_duration: 3
+    type1:
+      strategy: random
+      lists:
+        - duration: 3
+          subtitle_font: "msyh.ttc"
+          subtitle_font_size: 64
+          subtitle_x: "(w-text_w)/2"
+          subtitle_y: "(h-text_h)/2"
+          subtitle_color: "0xffffff"
+          subtitle_vfx:
+        - duration: 5
+          subtitle_font: "msyh.ttc"
+          subtitle_font_size: 64
+          subtitle_x: "(w-text_w)/2"
+          subtitle_y: "(h-text_h)/2"
+          subtitle_color: "0x99CCCC"
+          subtitle_vfx:
+    type2:
+      duration: [3,4,5]
+      trans_in: [1, 2, 3, 4]
+      trans_out: [1, 2, 3, 4]
+      animation: [1, 2]
+      subtitle: ""
+      subtitle_font: "msyh.ttc"
+      subtitle_font_size: 32
+      subtitle_x: 0
+      subtitle_y: 0
+      subtitle_color: "0xffffff"
+      subtitle_vfx:
+    type3:
+      duration: [8]
+      trans_in: [1, 2, 3, 4]
+      trans_out: [1, 2, 3, 4]
+      animation:
+      subtitle: ""
+      subtitle_font: "msyh.ttc"
+      subtitle_font_size: 32
+      subtitle_x: 0
+      subtitle_y: 0
+      subtitle_color: "0xffffff"
+      subtitle_vfx:
