@@ -63,7 +63,7 @@ class Memo:
     ffmpegPad = "iw+1:ceil(iw*{0}/sar)+1:(ow-iw)/2:(oh-ih)/2".format(AR)
     # ffmpeg 1: 缩小效果; 2: 放大效果
     ffmpegAnimations = {
-        1: "zoompan=z='if(eq(on,0),1.3,zoom-0.0005)':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':s={0}".format(OUTPUTRES),
+        1: "zoompan=z='if(eq(on,0),1.3,zoom-0.001)':x='(iw-iw/zoom)/2':y='(ih-ih/zoom)/2':s={0}".format(OUTPUTRES),
         2: "zoompan=z='min(max(zoom,pzoom)+0.0005,2.0)':x='iw/2-(iw/zoom/2)':"
            "y='ih/2-(ih/zoom/2)':s={0}".format(OUTPUTRES)
     }
@@ -286,19 +286,21 @@ class Memo:
 
                     # ffmpeg无法读取exif信息，需要事先旋转图片
                     if os.path.exists(inputfile):
-                        try:
-                            cmd = "magick mogrify -auto-orient {}".format(input_material["file"])
-                            subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
-                        except subprocess.CalledProcessError as e:
-                            out_bytes = e.output  # Output generated before error
-                            code = e.returncode  # Return code
-                            self.tuzuulog.log("uid: {p0}, ts: {p1}, file: {p4}, code: {p2}, msg: {p3}".format(
-                                p0=self.routeData["uid"],
-                                p1=datetime.datetime.now(),
-                                p2=code,
-                                p3=out_bytes.decode("gbk"),
-                                p4=inputfile)
-                        )
+                        suffix = os.path.splitext(inputfile)[-1]
+                        if suffix in [".png", ".jpg", ".jpeg", ".gif", ".tiff"]:
+                            try:
+                                cmd = "magick mogrify -auto-orient {}".format(input_material["file"])
+                                subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                            except subprocess.CalledProcessError as e:
+                                out_bytes = e.output  # Output generated before error
+                                code = e.returncode  # Return code
+                                self.tuzuulog.log("uid: {p0}, ts: {p1}, file: {p4}, code: {p2}, msg: {p3}".format(
+                                    p0=self.routeData["uid"],
+                                    p1=datetime.datetime.now(),
+                                    p2=code,
+                                    p3=out_bytes.decode("utf-8"),
+                                    p4=inputfile)
+                            )
 
                     self.ffmpegCmd += " -i {}".format(inputfile)
 
@@ -568,7 +570,7 @@ class Memo:
     def add_output(self, vaover_offset):
         output_dir = self.outputPath + time.strftime("%Y%m%d", time.localtime())
         if not os.path.exists(output_dir):
-            os.mkdir(output_dir)
+            os.makedirs(output_dir)
         self.ffmpegCmd += " -map [outv] {p0} -map [{p1}] {p2} {p3} -shortest {p5}/mymemo_{p4}.mp4".format(
             p0=self.ffmpegVoutConf,
             p1="aover" + str(vaover_offset),
@@ -589,5 +591,5 @@ class Memo:
             p0=self.routeData["uid"],
             p1=datetime.datetime.now(),
             p2=code,
-            p3=out_bytes.decode('gbk'))
+            p3=out_bytes.decode('utf-8'))
         )
