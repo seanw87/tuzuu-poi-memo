@@ -11,7 +11,6 @@ import yaml
 # from yaml.scanner import ScannerError
 from pprint import pprint
 import subprocess
-import sample_route_data
 import data_source
 
 
@@ -40,7 +39,7 @@ class Memo:
 
     scriptConf = {}
     staticPath = "materials/"
-    poiCoverPath = staticPath + "routes/"
+    poiCoverPath = staticPath + "poi_cover/"
     logoPath = staticPath + "logo.png"
     poiNum = 0
 
