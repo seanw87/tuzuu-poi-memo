@@ -1,4 +1,4 @@
 main:
-  applog: "../logs/gen_mem.log"
+  applog: "../logs/app.log"
   ffmpeglog: "../logs/ffmpeg_gen_log.log"
   ffmpegcmd: "../cmd/generated_ffmpeg_cmd.sh"

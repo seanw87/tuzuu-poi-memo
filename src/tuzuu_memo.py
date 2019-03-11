@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+
 import copy
 import datetime
 import os
@@ -285,19 +286,18 @@ class Memo:
 
                     # ffmpeg无法读取exif信息，需要事先旋转图片
                     if os.path.exists(inputfile):
-                        code = 0
                         try:
                             cmd = "magick mogrify -auto-orient {}".format(input_material["file"])
-                            out_bytes = subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
+                            subprocess.check_output(cmd, stderr=subprocess.STDOUT, shell=True)
                         except subprocess.CalledProcessError as e:
                             out_bytes = e.output  # Output generated before error
                             code = e.returncode  # Return code
-                        self.tuzuulog.log("uid: {p0}, ts: {p1}, file: {p4}, code: {p2}, msg: {p3}".format(
-                            p0=self.routeData["uid"],
-                            p1=datetime.datetime.now(),
-                            p2=code,
-                            p3=out_bytes.decode('utf-8'),
-                            p4=inputfile)
+                            self.tuzuulog.log("uid: {p0}, ts: {p1}, file: {p4}, code: {p2}, msg: {p3}".format(
+                                p0=self.routeData["uid"],
+                                p1=datetime.datetime.now(),
+                                p2=code,
+                                p3=out_bytes.decode("gbk"),
+                                p4=inputfile)
                         )
 
                     self.ffmpegCmd += " -i {}".format(inputfile)
@@ -589,5 +589,5 @@ class Memo:
             p0=self.routeData["uid"],
             p1=datetime.datetime.now(),
             p2=code,
-            p3=out_bytes.decode('utf-8'))
+            p3=out_bytes.decode('gbk'))
         )
