@@ -4,6 +4,7 @@
 import getopt
 import os
 import sys
+import time
 
 import yaml
 
@@ -63,21 +64,28 @@ def main(argv=None):
     # 初始化日志类
     tuzuulog = TuzuuLog(script_conf["main"])
 
+    curtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+
     # 获取数据
     route_data_batch = data_source.get_route_data()
+    if len(route_data_batch) == 0:
+        tuzuulog.log("time: {}, got empty route data.".format(curtime),
+                     printable=True)
 
     route_script_dir = r"../conf/route_scripts/"
     for route_data in route_data_batch:
         script_conf_path = route_script_dir + r"script_conf_r{}.yaml".format(route_data["route_id"])
         if os.path.exists(script_conf_path):
-            memo = Memo(script_conf_path, route_data, tuzuulog, script_conf)
+            memo = Memo(script_conf_path, route_data, tuzuulog, script_conf, curtime)
             memo.generate_memo()
-            tuzuulog.log("uid: {}, route_id: {} memo generated.".format(route_data["uid"], route_data["route_id"]))
-            print("uid: {}, route_id: {} memo generated.".format(route_data["uid"], route_data["route_id"]))
+
+            tuzuulog.log("time: {}, uid: {}, route_id: {} memo generated.".format(
+                curtime, route_data["uid"], route_data["route_id"]),
+                printable=True)
         else:
-            tuzuulog.log("uid: {}, route_id: {} route script: {} not found!".format(route_data["uid"],
-                                                                                    route_data["route_id"],
-                                                                                    script_conf_path))
+            tuzuulog.log("time: {}, uid: {}, route_id: {} route script: {} not found!".format(
+                curtime, route_data["uid"], route_data["route_id"], script_conf_path),
+                printable=True)
 
         exit(0)
 

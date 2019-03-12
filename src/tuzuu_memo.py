@@ -26,8 +26,8 @@ class Memo:
     PIXFMT = "yuv420p"
     POI_CAPTION_FONT = "msyh.ttc"
     POI_DEFAULT_COVER = "cut_default.png"
-    POI_TITLE_FONTSIZE = 48
-    POI_SUBTITLE_FONTSIZE = 32
+    POI_TITLE_FONTSIZE = 52
+    POI_SUBTITLE_FONTSIZE = 34
     POI_CAPTION_COLOR = "white"
     POI_CAPTION_DURATION = 4
     POI_TRANSIT_DURATION = 0.3
@@ -69,25 +69,37 @@ class Memo:
     }
     # POI cover style
     ffmpegPoiCoverAnimation = ""
+    # 1. 居中靠上
+    # ffmpegPoiTitleX = "((w-tw)/2)"
+    # ffmpegPoiTitleY = "min(h/4.5+n,h/4.5+20)"
+    # ffmpegPoiSubtitleX = "((w-tw)/2)"
+    # ffmpegPoiSubtitleY = "max(h/3.0-n,h/3.0-20)"
+    # ffmpegPoiAlpha = "min(1, n/15)"
+    # ffmpegPoiBoxY = "ih/5.7"
+    # ffmpegPoiBoxWidth = "iw"
+    # ffmpegPoiBoxHeight = 300
+    # 2. 垂直居中
     ffmpegPoiTitleX = "((w-tw)/2)"
-    ffmpegPoiTitleY = "min(h/4.5+n,h/4.5+20)"
+    ffmpegPoiTitleY = "min(h/2-80+n,h/2-80+20)"
     ffmpegPoiSubtitleX = "((w-tw)/2)"
-    ffmpegPoiSubtitleY = "max(h/3.0-n,h/3.0-20)"
+    ffmpegPoiSubtitleY = "max(h/2+60-n,h/2+60-20)"
     ffmpegPoiAlpha = "min(1, n/15)"
-    ffmpegPoiBoxY = "ih/5.7"
+    ffmpegPoiBoxY = "ih/2-h/2"
     ffmpegPoiBoxWidth = "iw"
     ffmpegPoiBoxHeight = 300
 
-    def __init__(self, script_conf_path, route_data, tuzuulog, appconf):
+    def __init__(self, script_conf_path, route_data, tuzuulog, appconf, curtime):
         try:
             f = open(script_conf_path, encoding="utf-8")
             self.scriptConf = yaml.load(f)
             self.routeData = route_data
             self.tuzuulog = tuzuulog
             self.appconf = appconf
+            self.curtime = curtime
         except FileNotFoundError:
-            self.tuzuulog.log("script conf file not found：" + str(FileNotFoundError))
-            print("script conf file not found：" + str(FileNotFoundError))
+            self.tuzuulog.log("time: {}, script conf file not found：{}".format(
+                self.curtime, str(FileNotFoundError)),
+                printable=True)
             exit(0)
 
     def generate_memo(self):
@@ -286,7 +298,7 @@ class Memo:
 
                     # ffmpeg无法读取exif信息，需要事先旋转图片
                     if os.path.exists(inputfile):
-                        suffix = os.path.splitext(inputfile)[-1]
+                        suffix = os.path.splitext(inputfile)[-1].lower()
                         if suffix in [".png", ".jpg", ".jpeg", ".gif", ".tiff"]:
                             try:
                                 cmd = "magick mogrify -auto-orient {}".format(input_material["file"])
@@ -294,9 +306,9 @@ class Memo:
                             except subprocess.CalledProcessError as e:
                                 out_bytes = e.output  # Output generated before error
                                 code = e.returncode  # Return code
-                                self.tuzuulog.log("uid: {p0}, ts: {p1}, file: {p4}, code: {p2}, msg: {p3}".format(
+                                self.tuzuulog.log("time: {p1}, uid: {p0}, file: {p4}, code: {p2}, msg: {p3}".format(
                                     p0=self.routeData["uid"],
-                                    p1=datetime.datetime.now(),
+                                    p1=self.curtime,
                                     p2=code,
                                     p3=out_bytes.decode("utf-8"),
                                     p4=inputfile)
@@ -587,9 +599,9 @@ class Memo:
         except subprocess.CalledProcessError as e:
             out_bytes = e.output  # Output generated before error
             code = e.returncode  # Return code
-        self.tuzuulog.ffmpeg_log("uid: {p0}, ts: {p1}, code: {p2}, msg: {p3}".format(
+        self.tuzuulog.ffmpeg_log("time: {p1}, uid: {p0}, code: {p2}, msg: {p3}".format(
             p0=self.routeData["uid"],
-            p1=datetime.datetime.now(),
+            p1=self.curtime,
             p2=code,
             p3=out_bytes.decode('utf-8'))
         )

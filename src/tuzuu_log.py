@@ -11,10 +11,11 @@ class TuzuuLog:
         self.ffmpeglog = appconf["ffmpeglog"]
         self.ffmpegcmd = appconf["ffmpegcmd"]
 
-    def log(self, content):
+    def log(self, content, printable=False):
         """
         通用日志方法
         :param content:
+        :param printable:
         :return:
         """
         applog_segs = self.applog.rsplit(".", 1)
@@ -22,6 +23,8 @@ class TuzuuLog:
         flog = open(applog, "a", encoding='utf-8')
         flog.write(content + "\n")
         flog.close()
+        if printable:
+            print(content)
 
     def ffmpeg_log(self, content):
         """
