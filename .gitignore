@@ -106,3 +106,4 @@ venv.bak/
 /cmd
 /logs/*.log
 .idea/workspace.xml
+.idea/workspace.xml

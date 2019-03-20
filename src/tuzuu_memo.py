@@ -184,7 +184,7 @@ class Memo:
         # 执行ffmpeg命令
         if self.execute():
             return True, {
-                "generate_time": self.curtime,
+                "generate_time": time.time(),
                 "id": 0,
                 "memo_file": self.local_output_file,
                 "route_id": self.routeData["route_id"],

@@ -267,6 +267,7 @@ def get_route_data(tuzuulog):
         }
     ]
 
+
 def add_user_memo(post_data, tuzuulog):
     request_url = REQUEST_DOMAIN + URI_ADDUSERMEMO
     headers = {'content-type': 'application/json'}
@@ -283,6 +284,7 @@ def add_user_memo(post_data, tuzuulog):
         else:
             tuzuulog.warning("time: {}, Post add user memo failed, info: {}".format(
                 curtime, json.dumps(post_data)), printable=True)
+            return True
 
     tuzuulog.error("time: {}, Post add user memo failed, Data corruption: {}, info: {},".format(
         curtime, r.text, json.dumps(post_data)), printable=True)
