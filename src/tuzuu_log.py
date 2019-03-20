@@ -21,7 +21,37 @@ class TuzuuLog:
         applog_segs = self.applog.rsplit(".", 1)
         applog = applog_segs[0] + "-" + self.curdate + "." + applog_segs[1]
         flog = open(applog, "a", encoding='utf-8')
-        flog.write(content + "\n")
+        flog.write("INFO " + content + "\n")
+        flog.close()
+        if printable:
+            print(content)
+
+    def warning(self, content, printable=False):
+        """
+        通用日志方法
+        :param content:
+        :param printable:
+        :return:
+        """
+        applog_segs = self.applog.rsplit(".", 1)
+        applog = applog_segs[0] + "-" + self.curdate + "." + applog_segs[1]
+        flog = open(applog, "a", encoding='utf-8')
+        flog.write("WARN " + content + "\n")
+        flog.close()
+        if printable:
+            print(content)
+
+    def error(self, content, printable=False):
+        """
+        通用日志方法
+        :param content:
+        :param printable:
+        :return:
+        """
+        applog_segs = self.applog.rsplit(".", 1)
+        applog = applog_segs[0] + "-" + self.curdate + "." + applog_segs[1]
+        flog = open(applog, "a", encoding='utf-8')
+        flog.write("ERROR " + content + "\n")
         flog.close()
         if printable:
             print(content)

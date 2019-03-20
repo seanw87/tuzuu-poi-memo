@@ -8,7 +8,7 @@ import time
 
 import yaml
 
-import data_source
+import data_model
 from tuzuu_log import TuzuuLog
 from tuzuu_memo import Memo
 
@@ -67,9 +67,9 @@ def main(argv=None):
     curtime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
 
     # 获取数据
-    route_data_batch = data_source.get_route_data()
+    route_data_batch = data_model.get_route_data(tuzuulog)
     if len(route_data_batch) == 0:
-        tuzuulog.log("time: {}, got empty route data.".format(curtime),
+        tuzuulog.warning("time: {}, got empty route data.".format(curtime),
                      printable=True)
 
     route_script_dir = r"../conf/route_scripts/"
@@ -77,13 +77,20 @@ def main(argv=None):
         script_conf_path = route_script_dir + r"script_conf_r{}.yaml".format(route_data["route_id"])
         if os.path.exists(script_conf_path):
             memo = Memo(script_conf_path, route_data, tuzuulog, script_conf, curtime)
-            memo.generate_memo()
+            success, retdata = memo.generate_memo()
 
-            tuzuulog.log("time: {}, uid: {}, route_id: {} memo generated.".format(
-                curtime, route_data["uid"], route_data["route_id"]),
-                printable=True)
+            if not success:
+                tuzuulog.error("time: {}, uid: {}, route_id: {} memo generate failed!.".format(
+                    curtime, route_data["uid"], route_data["route_id"]),
+                    printable=True)
+                continue
+            else:
+                data_model.add_user_memo(retdata, tuzuulog)
+                tuzuulog.log("time: {}, uid: {}, route_id: {} memo generated.".format(
+                    curtime, route_data["uid"], route_data["route_id"]),
+                    printable=True)
         else:
-            tuzuulog.log("time: {}, uid: {}, route_id: {} route script: {} not found!".format(
+            tuzuulog.error("time: {}, uid: {}, route_id: {} route script: {} not found!".format(
                 curtime, route_data["uid"], route_data["route_id"], script_conf_path),
                 printable=True)
 

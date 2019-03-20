@@ -7,7 +7,7 @@ import os
 import random
 import subprocess
 import time
-
+import json
 import yaml
 
 
@@ -88,6 +88,8 @@ class Memo:
     ffmpegPoiBoxWidth = "iw"
     ffmpegPoiBoxHeight = 300
 
+    local_output_file = ""
+
     def __init__(self, script_conf_path, route_data, tuzuulog, appconf, curtime):
         try:
             f = open(script_conf_path, encoding="utf-8")
@@ -97,10 +99,10 @@ class Memo:
             self.appconf = appconf
             self.curtime = curtime
         except FileNotFoundError:
-            self.tuzuulog.log("time: {}, script conf file not found：{}".format(
+            self.tuzuulog.error("time: {}, script conf file not found：{}".format(
                 self.curtime, str(FileNotFoundError)),
                 printable=True)
-            exit(0)
+            # exit(0)
 
     def generate_memo(self):
         # 生成filter complex脚本配置文件名字
@@ -108,6 +110,11 @@ class Memo:
 
         # 背景时长(DEPRECATED)、所有POI(CUT)格式化过的素材列表
         bg_duration, total_materials = self.materials_join_conf(self.routeData)
+        if len(total_materials) == 0:
+            self.tuzuulog.warning("time: {}, route is empty. route data: {}".format(
+                self.curtime, json.dumps(self.routeData)
+            ))
+            return False, {}
         """
         total_materials .eg:
             [{'poi_cover': 'cut1.png',
@@ -175,7 +182,16 @@ class Memo:
         self.tuzuulog.ffmpeg_cmd_export(self.ffmpegCmd)
 
         # 执行ffmpeg命令
-        self.execute()
+        if self.execute():
+            return True, {
+                "generate_time": self.curtime,
+                "id": 0,
+                "memo_file": self.local_output_file,
+                "route_id": self.routeData["route_id"],
+                "uid": self.routeData["uid"],
+            }
+        else:
+            return False, {}
 
 
     def get_filter_complex_filename(self, route_data):
@@ -583,13 +599,16 @@ class Memo:
         output_dir = self.outputPath + time.strftime("%Y%m%d", time.localtime())
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
-        self.ffmpegCmd += " -map [outv] {p0} -map [{p1}] {p2} {p3} -shortest {p5}/mymemo_{p4}.mp4".format(
+        self.local_output_file = "{}/mymemo_{}.mp4".format(
+            output_dir,
+            "{}_{}_{}".format(self.routeData["uid"], self.routeData["route_id"], self.routeData["finishtime"])
+        )
+        self.ffmpegCmd += " -map [outv] {p0} -map [{p1}] {p2} {p3} -shortest {p4}".format(
             p0=self.ffmpegVoutConf,
             p1="aover" + str(vaover_offset),
             p2=self.ffmpegAoutConf,
             p3=self.ffmpegMetaConf,
-            p4=self.routeData["author"] + "_" + self.routeData["route_name"] + "_" + str(self.routeData["finishtime"]),
-            p5=output_dir
+            p4=self.local_output_file
         )
 
     def execute(self):
@@ -605,3 +624,7 @@ class Memo:
             p2=code,
             p3=out_bytes.decode('utf-8'))
         )
+
+        if code == 0:
+            return True
+        return False
